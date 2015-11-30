@@ -10,6 +10,10 @@ module Stchart
       end
     end
 
+    def _short_id(id)
+      id.split('@')[0]
+    end
+
     def _zip_commit_number(metric_size, person_map)
       metrics = []
       metric_size.times do |i|

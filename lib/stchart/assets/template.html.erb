@@ -39,7 +39,7 @@
     <% person_map.each_with_index do |(id, metric), index| %>
       <% color = colors[index] || colors[9] %>
     {
-      label: "<%= id %>",
+      label: "<%= _short_id(id) %>",
       fillColor : "<%= color[1] %>",
       strokeColor : "<%= color[0] %>",
       pointColor : "<%= color[0] %>",
@@ -77,7 +77,7 @@
       draw(filterDatasets(name, this.chart_off));
     };
     <% person_map.each do |id, metric| %>
-    $('#<%=id%>').click(switcher);
+    $('#<%=_short_id(id)%>').click(switcher);
     <% end %>
 
 
@@ -119,9 +119,9 @@
       </tr>
       <% person_map.each_with_index do |(id, metric), index| %>
         <% color = colors[index] || colors[9] %>
-      <tr id='<%=id%>'>
+      <tr id='<%=_short_id(id)%>'>
         <td style="background-color: <%= color[0] %>;">&nbsp;</td>
-        <td class='name'><%= id %></td>
+        <td class='name'><%= _short_id(id) %></td>
         <% metric.each do |m| %>
         <td class='metric'><%= m %></td>
         <% end %>

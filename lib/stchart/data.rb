@@ -41,7 +41,7 @@ module Stchart
         person_labels << k.strftime("%y/%m/%d")
         v = v['stats']
         v.each do |person|
-          id = person['id'].split('@')[0]
+          id = person['id']
           metric = person['metric'].to_i
           person_map[id] = empty_data.dup unless person_map[id]
           person_map[id] << metric
