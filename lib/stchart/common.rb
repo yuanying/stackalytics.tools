@@ -1,5 +1,5 @@
 module Stchart
-  ROOT = File.join('..', '..', File.dirname(__FILE__))
+  ROOT = File.join( File.dirname(__FILE__), '..', '..' )
 
   COLORS = [
     ["rgba(75, 178, 197, 1)", "rgba(75, 178, 197, 0.2)"],
