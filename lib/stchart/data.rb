@@ -2,25 +2,31 @@ require 'stchart/common'
 
 module Stchart
   module Data
-    def fetch_company(release: 'mitaka', company: 'NEC')
-      base_uri = "http://stackalytics.com/api/1.0/stats/engineers?release=#{release}&metric=commits&company=#{company}"
+    BASE_URI = "http://stackalytics.com/api/1.0/stats/"
+
+    def fetch_company(
+        release: 'mitaka',
+        company: 'NEC',
+        interval: 7,
+        target: 'engineers')
+      base_uri = "#{BASE_URI}#{target}?release=#{release}&metric=commits&company=#{company}"
 
       release = Stchart::RELEASES.find{|v| v[1] == release }
       release_begin_date = Stchart::RELEASES[release[0] - 1][2]
       release_date = release[2]
 
-      tmp_dir = File.join(Stchart::ROOT, '.tmp', company)
+      tmp_dir = File.join(Stchart::ROOT, '.tmp', company, target)
       FileUtils.mkdir_p(tmp_dir)
 
       raw_data = {}
-
-      day = release_begin_date + 7.days
-      while day < Time.now && day < release_date
-        tmp_file = File.join(tmp_dir, day.to_i.to_s)
-        if File.file?(tmp_file)
-          data_uri = tmp_file
-        else
+      day = release_begin_date
+      begin
+        day = day + interval.days
+        tmp_file = File.join(tmp_dir, "#{day.to_i.to_s}.json")
+        if day > Time.now || !File.file?(tmp_file)
           data_uri = "#{base_uri}&end_date=#{day.to_i}"
+        else
+          data_uri = tmp_file
         end
         json_data = nil
         open(data_uri) do |io|
@@ -30,8 +36,18 @@ module Stchart
         open(tmp_file, 'w') do |file|
           file.write( json_data )
         end
-        day = day + 7.days
-      end
+      end while day < Time.now && day < release_date
+
+      return raw_data
+    end
+
+    def fetch_engineers(release: 'mitaka', company: 'NEC')
+      raw_data = fetch_company(
+        release: release,
+        company: company,
+        target: 'engineers',
+        interval: 7
+      )
 
       person_labels = []
       person_map = {}

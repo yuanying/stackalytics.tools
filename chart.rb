@@ -31,7 +31,7 @@ companies.each do |company|
   html_path = File.join(ROOT, "#{company}.html")
   xlsx_path = File.join(ROOT, "#{company}.xlsx")
 
-  person_labels, person_map = fetch_company(release: release, company: company)
+  person_labels, person_map = fetch_engineers(release: release, company: company)
   html_generate(html_path, company, person_labels, person_map)
   xlsx_generate(xlsx_path, company, person_labels, person_map)
 
