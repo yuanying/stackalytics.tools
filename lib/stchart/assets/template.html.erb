@@ -97,7 +97,7 @@
     var ctx = document.getElementById("canvas").getContext("2d");
     var draw = function(datasets){
       var lineChartData = {
-        labels : [<%= person_labels.map{|l| "\"#{l}\"" }.join(', ') %>],
+        labels : [<%= person_labels.map{|l| "\"#{short_date(l)}\"" }.join(', ') %>],
         datasets : datasets
       }
       if (window.myLine) {
@@ -145,7 +145,7 @@
         <th></th>
         <th></th>
         <% person_labels.each do |label| %>
-          <th><%= label %></th>
+          <th><%= short_date(label) %></th>
         <% end %>
       </tr>
       <% person_map.each_with_index do |(id, metric), index| %>

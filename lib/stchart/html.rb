@@ -1,9 +1,11 @@
 require 'stchart/common'
 require 'stchart/color'
+require 'stchart/date'
 
 module Stchart
   module Html
     include Color
+    include Date
 
     def html_generate(html_path, company, person_labels, person_map)
       open(html_path, 'w') do |io|

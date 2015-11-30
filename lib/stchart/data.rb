@@ -38,7 +38,7 @@ module Stchart
       empty_data = []
 
       raw_data.each do |k, v|
-        person_labels << k.strftime("%y/%m/%d")
+        person_labels << k.strftime("%Y/%m/%d")
         v = v['stats']
         v.each do |person|
           id = person['id']
