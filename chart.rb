@@ -122,7 +122,6 @@ __END__
   };
 
   $(function() {
-    <% person_map.each do |id, metric| %>
     var switcher = function() {
       var name = this.id;
       if (this.chart_off) {
@@ -134,6 +133,7 @@ __END__
       }
       draw(filterDatasets(name, this.chart_off));
     };
+    <% person_map.each do |id, metric| %>
     $('#<%=id%>').click(switcher);
     <% end %>
 
