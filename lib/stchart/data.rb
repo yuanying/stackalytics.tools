@@ -2,7 +2,7 @@ require 'stchart/common'
 
 module Stchart
   module Data
-    def fetch(release: 'mitaka', company: 'NEC')
+    def fetch_company(release: 'mitaka', company: 'NEC')
       base_uri = "http://stackalytics.com/api/1.0/stats/engineers?release=#{release}&metric=commits&company=#{company}"
 
       release = Stchart::RELEASES.find{|v| v[1] == release }

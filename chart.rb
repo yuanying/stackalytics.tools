@@ -7,11 +7,11 @@ require 'yaml'
 require 'optparse'
 require 'fileutils'
 
-company = "NEC"
+companies = []
 release = "mitaka"
 
 opt = OptionParser.new
-opt.on('-c', '--company [VAL]') {|v| company = v }
+opt.on('-c', '--company [VAL]') {|v| companies << v }
 opt.on('-r', '--release [VAL]') {|v| release = v }
 opt.parse!(ARGV)
 
@@ -25,9 +25,18 @@ include Stchart::Data
 include Stchart::Html
 include Stchart::Xlsx
 
-html_path = File.join(ROOT, 'index.html')
-xlsx_path = File.join(ROOT, 'index.xlsx')
+person_labels = []
+person_maps = {}
+companies.each do |company|
+  html_path = File.join(ROOT, "#{company}.html")
+  xlsx_path = File.join(ROOT, "#{company}.xlsx")
 
-person_labels, person_map = fetch(release: release, company: company)
-html_generate(html_path, company, person_labels, person_map)
-xlsx_generate(xlsx_path, company, person_labels, person_map)
+  person_labels, person_map = fetch_company(release: release, company: company)
+  html_generate(html_path, company, person_labels, person_map)
+  xlsx_generate(xlsx_path, company, person_labels, person_map)
+
+  person_maps[company] = person_map
+end
+
+html_path = File.join(ROOT, "index.html")
+html_companies_compare(html_path, person_labels, person_maps)

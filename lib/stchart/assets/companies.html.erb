@@ -35,8 +35,8 @@
   }
   </style>
   <script>
-  var datasets = [
-    <% person_map.each_with_index do |(id, metric), index| %>
+  var commit_datasets = [
+    <% person_maps.each_with_index do |(id, metric), index| %>
       <% color = colors[index] || colors[9] %>
     {
       label: "<%= id %>",
@@ -46,43 +46,33 @@
       pointStrokeColor : "#fff",
       pointHighlightFill : "#fff",
       pointHighlightStroke : "<%= color[0] %>",
-      data : [ <%= metric.join(', ') %> ],
+      data : [ <%= metric['commit'].join(', ') %> ],
       chart_off: false
     },
     <% end %>
   ];
-  var filterDatasets = function(id, chart_off) {
-    var rtn = [];
-    for(var i=0; i<datasets.length; i++) {
-      if (datasets[i].label == id ) {
-        datasets[i].chart_off = chart_off;
-      }
-      if (!datasets[i].chart_off) {
-        rtn.push(datasets[i]);
-      }
-    }
-    return rtn;
-  };
+
+  var people_datasets = [
+    <% person_maps.each_with_index do |(id, metric), index| %>
+      <% color = colors[index] || colors[9] %>
+    {
+      label: "<%= id %>",
+      fillColor : "<%= color[1] %>",
+      strokeColor : "<%= color[0] %>",
+      pointColor : "<%= color[0] %>",
+      pointStrokeColor : "#fff",
+      pointHighlightFill : "#fff",
+      pointHighlightStroke : "<%= color[0] %>",
+      data : [ <%= metric['people'].join(', ') %> ],
+      chart_off: false
+    },
+    <% end %>
+  ];
 
   $(function() {
-    var switcher = function() {
-      var name = this.id;
-      if (this.chart_off) {
-        this.chart_off = false;
-        $(this).removeClass("chart_off");
-      } else {
-        this.chart_off = true;
-        $(this).addClass("chart_off");
-      }
-      draw(filterDatasets(name, this.chart_off));
-    };
-    <% person_map.each do |id, metric| %>
-    $('#<%=id%>').click(switcher);
-    <% end %>
-
-
-    var ctx = document.getElementById("canvas").getContext("2d");
-    var draw = function(datasets){
+    var commit_ctx = document.getElementById("commitcanvas").getContext("2d");
+    var people_ctx = document.getElementById("peoplecanvas").getContext("2d");
+    var draw = function(ctx, datasets){
       var lineChartData = {
         labels : [<%= person_labels.map{|l| "\"#{l}\"" }.join(', ') %>],
         datasets : datasets
@@ -95,18 +85,18 @@
         responsive: true
       });
     };
-    draw(datasets);
+    draw(commit_ctx, commit_datasets);
+    draw(people_ctx, people_datasets);
   });
   </script>
 </head>
 <body>
 <div class='container'>
-  <h1><%= company %></h1>
+  <h1>Stackalytics.Chart</h1>
+
+  <h2>Number of Commit</h2>
   <div>
-    <a class='btn btn-primary' href='<%=company%>.xlsx'>Excel</a>
-  </div>
-  <div>
-    <canvas id="canvas" height="800" width="1200"></canvas>
+    <canvas id="commitcanvas" height="800" width="1200"></canvas>
   </div>
   <div>
     <table class='table table-hover'>
@@ -117,12 +107,38 @@
           <th><%= label %></th>
         <% end %>
       </tr>
-      <% person_map.each_with_index do |(id, metric), index| %>
+      <% person_maps.each_with_index do |(id, metric), index| %>
         <% color = colors[index] || colors[9] %>
       <tr id='<%=id%>'>
         <td style="background-color: <%= color[0] %>;">&nbsp;</td>
-        <td class='name'><%= id %></td>
-        <% metric.each do |m| %>
+        <td class='name'><a href='<%=id%>.html'><%= id %></a></td>
+        <% metric['commit'].each do |m| %>
+        <td class='metric'><%= m %></td>
+        <% end %>
+      </tr>
+      <% end %>
+    </table>
+  </div>
+
+  <h2>Number of people</h2>
+  <div>
+    <canvas id="peoplecanvas" height="800" width="1200"></canvas>
+  </div>
+  <div>
+    <table class='table table-hover'>
+      <tr>
+        <th></th>
+        <th></th>
+        <% person_labels.each do |label| %>
+          <th><%= label %></th>
+        <% end %>
+      </tr>
+      <% person_maps.each_with_index do |(id, metric), index| %>
+        <% color = colors[index] || colors[9] %>
+      <tr id='<%=id%>'>
+        <td style="background-color: <%= color[0] %>;">&nbsp;</td>
+        <td class='name'><a href='<%=id%>.html'><%= id %></a></td>
+        <% metric['people'].each do |m| %>
         <td class='metric'><%= m %></td>
         <% end %>
       </tr>
