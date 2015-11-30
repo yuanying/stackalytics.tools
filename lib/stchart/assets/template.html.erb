@@ -102,9 +102,21 @@
 <body>
 <div class='container'>
   <h1><%= company %></h1>
+
+  <ol class="breadcrumb">
+    <li><a href="./index.html">Home</a></li>
+    <li class="active"><%= company %></li>
+  </ol>
+
   <div>
     <a class='btn btn-primary' href='<%=company%>.xlsx'>Excel</a>
+    <a class='btn btn-default' href="http://stackalytics.com/?company=<%=company%>">
+      Stackalytics
+    </a>
   </div>
+
+  <h2>Number of Commit</h2>
+
   <div>
     <canvas id="canvas" height="800" width="1200"></canvas>
   </div>
@@ -121,7 +133,11 @@
         <% color = colors[index] || colors[9] %>
       <tr id='<%=_short_id(id)%>'>
         <td style="background-color: <%= color[0] %>;">&nbsp;</td>
-        <td class='name'><%= _short_id(id) %></td>
+        <td class='name'>
+          <a href="http://stackalytics.com/?user_id=<%=id%>">
+            <%= _short_id(id) %>
+          </a>
+        </td>
         <% metric.each do |m| %>
         <td class='metric'><%= m %></td>
         <% end %>
