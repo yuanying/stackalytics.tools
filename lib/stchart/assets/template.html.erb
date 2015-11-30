@@ -54,7 +54,7 @@
   var filterDatasets = function(id, chart_off) {
     var rtn = [];
     for(var i=0; i<datasets.length; i++) {
-      if (datasets[i].label == id ) {
+      if (id == 'all' || datasets[i].label == id ) {
         datasets[i].chart_off = chart_off;
       }
       if (!datasets[i].chart_off) {
@@ -65,16 +65,29 @@
   };
 
   $(function() {
+    var showAll = function() {
+      $('.person').removeClass("chart_off");
+      draw(filterDatasets('all', false));
+    };
+    $('#showAll').click(showAll);
+
+    var hideAll = function() {
+      $('.person').addClass("chart_off");
+      draw(filterDatasets('all', true));
+    };
+    $('#hideAll').click(hideAll);
+
     var switcher = function() {
       var name = this.id;
-      if (this.chart_off) {
-        this.chart_off = false;
+      var chart_off = $(this).hasClass("chart_off");
+      if (chart_off) {
         $(this).removeClass("chart_off");
+        chart_off = false;
       } else {
-        this.chart_off = true;
         $(this).addClass("chart_off");
+        chart_off = true;
       }
-      draw(filterDatasets(name, this.chart_off));
+      draw(filterDatasets(name, chart_off));
     };
     <% person_map.each do |id, metric| %>
     $('#<%=_short_id(id)%>').click(switcher);
@@ -120,6 +133,12 @@
   <div>
     <canvas id="canvas" height="800" width="1200"></canvas>
   </div>
+
+  <div class="btn-group" role="group" aria-label="...">
+    <button id='showAll' type="button" class="btn btn-success">Show ALL</button>
+    <button id='hideAll' type="button" class="btn btn-danger">Hide All</button>
+  </div>
+
   <div>
     <table class='table table-hover'>
       <tr>
@@ -131,7 +150,7 @@
       </tr>
       <% person_map.each_with_index do |(id, metric), index| %>
         <% color = colors[index] || colors[9] %>
-      <tr id='<%=_short_id(id)%>'>
+      <tr class='person' id='<%=_short_id(id)%>'>
         <td style="background-color: <%= color[0] %>;">&nbsp;</td>
         <td class='name'>
           <a href="http://stackalytics.com/?user_id=<%=id%>">
