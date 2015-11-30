@@ -14,6 +14,13 @@ module Stchart
     ["rgba(255, 88, 0, 1)", "rgba(255, 88, 0, 0.2)"],
   ]
 
+  def get_color(index)
+    unless COLORS[index]
+      color = "#{rand(256)}, #{rand(256)}, #{rand(256)}"
+      COLORS[index] = ["rgba(#{color}, 1)", "rgba(#{color}, 0.2)"]
+    end
+  end
+
   RELEASES = [
     [0, 'cactus', Time.new(2011, 4, 15)],
     [1, 'diablo', Time.new(2011, 9, 22)],

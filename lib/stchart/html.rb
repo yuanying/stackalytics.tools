@@ -1,8 +1,11 @@
 require 'stchart/common'
+require 'stchart/color'
 
 module Stchart
   module Html
-    def html_generate(html_path, company, person_labels, person_map, colors: Stchart::COLORS)
+    include Color
+
+    def html_generate(html_path, company, person_labels, person_map)
       open(html_path, 'w') do |io|
         open(File.join(File.dirname(__FILE__), 'assets', 'template.html.erb')) do |t|
           io.write(ERB.new(t.read).result(binding))
@@ -36,7 +39,7 @@ module Stchart
       return metrics
     end
 
-    def html_companies_compare(html_path, person_labels, person_maps, colors: Stchart::COLORS)
+    def html_companies_compare(html_path, person_labels, person_maps)
       person_maps = person_maps.inject( {} ) do |a, (k,v)|
         a[k] ||= {}
         a[k]['commit'] = _zip_commit_number(person_labels.size, v)

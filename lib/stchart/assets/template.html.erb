@@ -37,7 +37,7 @@
   <script>
   var datasets = [
     <% person_map.each_with_index do |(id, metric), index| %>
-      <% color = colors[index] || colors[9] %>
+      <% color = get_color(index) %>
     {
       label: "<%= _short_id(id) %>",
       fillColor : "<%= color[1] %>",
@@ -149,7 +149,7 @@
         <% end %>
       </tr>
       <% person_map.each_with_index do |(id, metric), index| %>
-        <% color = colors[index] || colors[9] %>
+        <% color = get_color(index) %>
       <tr class='person' id='<%=_short_id(id)%>'>
         <td style="background-color: <%= color[0] %>;">&nbsp;</td>
         <td class='name'>
