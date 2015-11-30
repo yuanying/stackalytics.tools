@@ -9,27 +9,31 @@ require 'fileutils'
 
 company = "NEC"
 release = "mitaka"
-base_uri = "http://stackalytics.com/api/1.0/stats/engineers?release=#{release}&metric=commits&company=#{company}"
 
 opt = OptionParser.new
 opt.on('-c', '--company') {|v| company = v }
 opt.on('-r', '--release') {|v| release = v }
 opt.parse!(ARGV)
 
+base_uri = "http://stackalytics.com/api/1.0/stats/engineers?release=#{release}&metric=commits&company=#{company}"
+
 releases = [
-  ['cactus', Time.new(2011, 4, 15)],
-  ['diablo', Time.new(2011, 9, 22)],
-  ['essex', Time.new(2012, 4, 5)],
-  ['folsom', Time.new(2012, 9, 27)],
-  ['grizzly', Time.new(2014, 4, 4)],
-  ['havana', Time.new(2013, 9, 17)],
-  ['icehouse', Time.new(2014, 4, 17)],
-  ['juno', Time.new(2014, 9, 16)],
-  ['kilo', Time.new(2015, 4, 30)],
-  ['liberty', Time.new(2015, 9, 17)],
-  ['mitaka', Time.new(2016, 4, 8)],
+  [0, 'cactus', Time.new(2011, 4, 15)],
+  [1, 'diablo', Time.new(2011, 9, 22)],
+  [2, 'essex', Time.new(2012, 4, 5)],
+  [3, 'folsom', Time.new(2012, 9, 27)],
+  [4, 'grizzly', Time.new(2014, 4, 4)],
+  [5, 'havana', Time.new(2013, 9, 17)],
+  [6, 'icehouse', Time.new(2014, 4, 17)],
+  [7, 'juno', Time.new(2014, 9, 16)],
+  [8, 'kilo', Time.new(2015, 4, 30)],
+  [9, 'liberty', Time.new(2015, 9, 17)],
+  [10, 'mitaka', Time.new(2016, 4, 8)],
 ]
-release_date = releases.find{|v| v[0] == release }[1]
+
+release = releases.find{|v| v[1] == release }
+release_begin_date = releases[release[0] - 1][2]
+release_date = release[2]
 
 colors = [
   ["rgba(75, 178, 197, 1)", "rgba(75, 178, 197, 0.2)"],
@@ -49,9 +53,8 @@ tmp_dir = File.join(ROOT, '.tmp', company)
 FileUtils.mkdir_p(tmp_dir)
 
 raw_data = {}
-day = Time.new(2015, 10, 16, 0, 0, 0)
 
-day = day + 7.days
+day = release_begin_date + 7.days
 while day < Time.now && day < release_date
   tmp_file = File.join(tmp_dir, day.to_i.to_s)
   if File.file?(tmp_file)
