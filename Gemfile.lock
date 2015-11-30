@@ -7,9 +7,18 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
+    axlsx (2.0.1)
+      htmlentities (~> 4.3.1)
+      nokogiri (>= 1.4.1)
+      rubyzip (~> 1.0.0)
+    htmlentities (4.3.4)
     i18n (0.7.0)
     json (1.8.3)
+    mini_portile2 (2.0.0)
     minitest (5.8.3)
+    nokogiri (1.6.7)
+      mini_portile2 (~> 2.0.0.rc2)
+    rubyzip (1.0.0)
     thread_safe (0.3.5)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
@@ -19,6 +28,7 @@ PLATFORMS
 
 DEPENDENCIES
   activesupport
+  axlsx
 
 BUNDLED WITH
    1.10.6
