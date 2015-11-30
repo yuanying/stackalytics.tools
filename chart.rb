@@ -8,7 +8,28 @@ require 'optparse'
 require 'fileutils'
 
 company = "NEC"
-base_uri = "http://stackalytics.com/api/1.0/stats/engineers?release=mitaka&metric=commits&company=#{company}"
+release = "mitaka"
+base_uri = "http://stackalytics.com/api/1.0/stats/engineers?release=#{release}&metric=commits&company=#{company}"
+
+opt = OptionParser.new
+opt.on('-c', '--company') {|v| company = v }
+opt.on('-r', '--release') {|v| release = v }
+opt.parse!(ARGV)
+
+releases = [
+  ['cactus', Time.new(2011, 4, 15)],
+  ['diablo', Time.new(2011, 9, 22)],
+  ['essex', Time.new(2012, 4, 5)],
+  ['folsom', Time.new(2012, 9, 27)],
+  ['grizzly', Time.new(2014, 4, 4)],
+  ['havana', Time.new(2013, 9, 17)],
+  ['icehouse', Time.new(2014, 4, 17)],
+  ['juno', Time.new(2014, 9, 16)],
+  ['kilo', Time.new(2015, 4, 30)],
+  ['liberty', Time.new(2015, 9, 17)],
+  ['mitaka', Time.new(2016, 4, 8)],
+]
+release_date = releases.find{|v| v[0] == release }[1]
 
 colors = [
   ["rgba(75, 178, 197, 1)", "rgba(75, 178, 197, 0.2)"],
@@ -27,15 +48,11 @@ ROOT = File.dirname(__FILE__)
 tmp_dir = File.join(ROOT, '.tmp', company)
 FileUtils.mkdir_p(tmp_dir)
 
-opt = OptionParser.new
-opt.on('-c', '--company') {|v| company = v }
-opt.parse!(ARGV)
-
 raw_data = {}
 day = Time.new(2015, 10, 16, 0, 0, 0)
 
 day = day + 7.days
-while day < Time.now
+while day < Time.now && day < release_date
   tmp_file = File.join(tmp_dir, day.to_i.to_s)
   if File.file?(tmp_file)
     data_uri = tmp_file
@@ -79,8 +96,9 @@ end
 __END__
 <html>
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+  <link href="css/bootstrap-responsive.css" rel="stylesheet">
   <script src="http://code.jquery.com/jquery.js"></script>
   <script src="js/bootstrap.min.js"></script>
   <script src="js/Chart.min.js"></script>
@@ -159,7 +177,7 @@ __END__
 <body>
 <div class='container'>
   <div>
-    <canvas id="canvas" height="1200" width="1600"></canvas>
+    <canvas id="canvas" height="800" width="1200"></canvas>
   </div>
   <div>
     <table class='table table-hover'>
