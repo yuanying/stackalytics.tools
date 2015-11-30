@@ -8,4 +8,6 @@
 
 ## Generate Chart
 
-    $ bundle exec ruby chart.rb --company YOUR_COMPANY_NAME --release mitaka
+    $ bundle exec ruby chart.rb --release mitaka \
+                                --company YOUR_COMPANY \
+                                --company YOUR_COMPETITOR
