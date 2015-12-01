@@ -42,6 +42,32 @@ module Stchart
       return raw_data
     end
 
+    def fetch_companies(release: 'mitaka', companies: [])
+      company_labels = []
+      company_map = {}
+      companies.each do |company|
+        raw_data = fetch_company(
+          release: release,
+          company: company,
+          target: 'companies',
+          interval: 1
+        )
+        company_labels = raw_data.keys
+        series = []
+        raw_data.each do |_, v|
+          if v['stats'][0]
+            series << v['stats'][0]['metric']
+          else
+            series << 0
+          end
+        end
+        company_map[company] = series
+      end
+
+      company_labels = company_labels.map { |k| k.strftime("%Y/%m/%d")  }
+      return [company_labels, company_map]
+    end
+
     def fetch_engineers(release: 'mitaka', company: 'NEC')
       raw_data = fetch_company(
         release: release,

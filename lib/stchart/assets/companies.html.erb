@@ -36,7 +36,7 @@
   </style>
   <script>
   var commit_datasets = [
-    <% person_maps.each_with_index do |(id, metric), index| %>
+    <% company_maps.each_with_index do |(id, metric), index| %>
       <% color = get_color(index) %>
     {
       label: "<%= id %>",
@@ -46,11 +46,12 @@
       pointStrokeColor : "#fff",
       pointHighlightFill : "#fff",
       pointHighlightStroke : "<%= color[0] %>",
-      data : [ <%= metric['commit'].join(', ') %> ],
+      data : [ <%= metric.join(', ') %> ],
       chart_off: false
     },
     <% end %>
   ];
+  var company_labels = [<%= company_labels.map{|l| "\"#{short_date(l)}\"" }.join(', ') %>];
 
   var people_datasets = [
     <% person_maps.each_with_index do |(id, metric), index| %>
@@ -68,13 +69,14 @@
     },
     <% end %>
   ];
+  var peaple_labels = [<%= person_labels.map{|l| "\"#{short_date(l)}\"" }.join(', ') %>];
 
   $(function() {
     var commit_ctx = document.getElementById("commitcanvas").getContext("2d");
     var people_ctx = document.getElementById("peoplecanvas").getContext("2d");
-    var draw = function(ctx, datasets){
+    var draw = function(ctx, labels, datasets){
       var lineChartData = {
-        labels : [<%= person_labels.map{|l| "\"#{short_date(l)}\"" }.join(', ') %>],
+        labels : labels,
         datasets : datasets
       }
       if (window.myLine) {
@@ -85,8 +87,8 @@
         responsive: true
       });
     };
-    draw(commit_ctx, commit_datasets);
-    draw(people_ctx, people_datasets);
+    draw(commit_ctx, company_labels, commit_datasets);
+    draw(people_ctx, peaple_labels, people_datasets);
   });
   </script>
 </head>

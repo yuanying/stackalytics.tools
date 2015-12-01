@@ -38,5 +38,13 @@ companies.each do |company|
   person_maps[company] = person_map
 end
 
+company_labels, company_maps = fetch_companies(release: release, companies: companies)
+
 html_path = File.join(ROOT, "index.html")
-html_companies_compare(html_path, person_labels, person_maps)
+html_companies_compare(
+  html_path,
+  person_labels,
+  person_maps,
+  company_labels,
+  company_maps
+)

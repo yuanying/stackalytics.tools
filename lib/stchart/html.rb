@@ -41,7 +41,12 @@ module Stchart
       return metrics
     end
 
-    def html_companies_compare(html_path, person_labels, person_maps)
+    def html_companies_compare(
+      html_path,
+      person_labels,
+      person_maps,
+      company_labels,
+      company_maps)
       person_maps = person_maps.inject( {} ) do |a, (k,v)|
         a[k] ||= {}
         a[k]['commit'] = _zip_commit_number(person_labels.size, v)
