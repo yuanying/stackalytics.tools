@@ -4,7 +4,9 @@ require 'stchart/common'
 
 module Stchart
   module Xlsx
-    def xlsx_generate(xlsx_path, company, person_labels, person_map, colors: Stchart::COLORS)
+    include Common
+
+    def xlsx_generate(xlsx_path, company, person_labels, person_map)
       Axlsx::Package.new do |package|
         package.workbook.add_worksheet(:name => "Index") do |sheet|
           sheet.add_row(person_labels.dup.unshift(''))
@@ -28,6 +30,44 @@ module Stchart
                                title: sheet["A#{index + 2}"],
                                smooth: false
             end
+          end
+        end
+        package.serialize(xlsx_path)
+      end
+    end
+
+    def xlsx_companies_compare(
+      xlsx_path,
+      person_labels,
+      person_maps,
+      company_labels,
+      company_maps)
+      person_maps = person_maps.inject( {} ) do |a, (k,v)|
+        a[k] ||= {}
+        a[k]['commit'] = _zip_commit_number(person_labels.size, v)
+        a[k]['people'] = _zip_people_number(person_labels.size, v)
+        a
+      end
+
+      Axlsx::Package.new do |package|
+        package.workbook.add_worksheet(:name => "Commits (1)") do |sheet|
+          sheet.add_row(person_labels.dup.unshift(''))
+          person_maps.each do |id, metric|
+            sheet.add_row([id] + metric['commit'])
+          end
+        end
+
+        package.workbook.add_worksheet(:name => "Commits (2)") do |sheet|
+          sheet.add_row(company_labels.dup.unshift(''))
+          company_maps.each do |id, metric|
+            sheet.add_row([id] + metric)
+          end
+        end
+
+        package.workbook.add_worksheet(:name => "Peaple") do |sheet|
+          sheet.add_row(person_labels.dup.unshift(''))
+          person_maps.each do |id, metric|
+            sheet.add_row([id] + metric['people'])
           end
         end
         package.serialize(xlsx_path)

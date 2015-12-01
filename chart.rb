@@ -48,3 +48,11 @@ html_companies_compare(
   company_labels,
   company_maps
 )
+xlsx_path = File.join(ROOT, "index.xlsx")
+xlsx_companies_compare(
+  xlsx_path,
+  person_labels,
+  person_maps,
+  company_labels,
+  company_maps
+)

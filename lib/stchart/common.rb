@@ -1,4 +1,32 @@
 module Stchart
+  module Common
+    def _short_id(id)
+      id.split('@')[0]
+    end
+
+    def _zip_commit_number(metric_size, person_map)
+      metrics = []
+      metric_size.times do |i|
+        person_map.each do |_, v|
+          metrics[i] ||= 0
+          metrics[i] += v[i]
+        end
+      end
+      return metrics
+    end
+
+    def _zip_people_number(metric_size, person_map)
+      metrics = []
+      metric_size.times do |i|
+        person_map.each do |_, v|
+          metrics[i] ||= 0
+          metrics[i] += 1 if v[i] != 0
+        end
+      end
+      return metrics
+    end
+  end
+
   ROOT = File.join( File.dirname(__FILE__), '..', '..' )
 
   COLORS = [
