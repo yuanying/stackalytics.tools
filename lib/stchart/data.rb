@@ -8,23 +8,24 @@ module Stchart
         release: 'mitaka',
         company: 'NEC',
         interval: 7,
-        target: 'engineers')
+        target: 'engineers',
+        flag: nil)
       base_uri = "#{BASE_URI}#{target}?release=#{release}&metric=commits&company=#{company}"
-
-      release = Stchart::RELEASES.find{|v| v[1] == release }
-      release_begin_date = Stchart::RELEASES[release[0] - 1][2]
-      release_date = release[2]
 
       tmp_dir = File.join(Stchart::ROOT, '.tmp', company, target)
       FileUtils.mkdir_p(tmp_dir)
 
       raw_data = {}
-      day = release_begin_date
-      begin
-        day = day + interval.days
-        tmp_file = File.join(tmp_dir, "#{day.to_i.to_s}.json")
-        if day > Time.now || !File.file?(tmp_file)
-          data_uri = "#{base_uri}&end_date=#{day.to_i}"
+
+      release_interval(
+        release: release,
+        interval: interval,
+        flag: flag
+      ) do |day, actual_day|
+
+        tmp_file = File.join(tmp_dir, "#{actual_day.to_i.to_s}.json")
+        unless File.file?(tmp_file)
+          data_uri = "#{base_uri}&end_date=#{actual_day.to_i}"
         else
           data_uri = tmp_file
         end
@@ -36,7 +37,7 @@ module Stchart
         open(tmp_file, 'w') do |file|
           file.write( json_data )
         end
-      end while day < Time.now && day < release_date
+      end
 
       return raw_data
     end
@@ -46,7 +47,8 @@ module Stchart
         release: release,
         company: company,
         target: 'engineers',
-        interval: 7
+        interval: 7,
+        flag: :friday
       )
 
       person_labels = []

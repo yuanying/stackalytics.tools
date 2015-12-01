@@ -22,16 +22,16 @@ module Stchart
   end
 
   RELEASES = [
-    [0, 'cactus', Time.new(2011, 4, 15)],
-    [1, 'diablo', Time.new(2011, 9, 22)],
-    [2, 'essex', Time.new(2012, 4, 5)],
-    [3, 'folsom', Time.new(2012, 9, 27)],
-    [4, 'grizzly', Time.new(2014, 4, 4)],
-    [5, 'havana', Time.new(2013, 9, 17)],
-    [6, 'icehouse', Time.new(2014, 4, 17)],
-    [7, 'juno', Time.new(2014, 9, 16)],
-    [8, 'kilo', Time.new(2015, 4, 30)],
-    [9, 'liberty', Time.new(2015, 9, 17)],
-    [10, 'mitaka', Time.new(2016, 4, 8)],
+    [0, 'cactus', Date.new(2011, 4, 15)],
+    [1, 'diablo', Date.new(2011, 9, 22)],
+    [2, 'essex', Date.new(2012, 4, 5)],
+    [3, 'folsom', Date.new(2012, 9, 27)],
+    [4, 'grizzly', Date.new(2014, 4, 4)],
+    [5, 'havana', Date.new(2013, 9, 17)],
+    [6, 'icehouse', Date.new(2014, 4, 17)],
+    [7, 'juno', Date.new(2014, 9, 16)],
+    [8, 'kilo', Date.new(2015, 4, 30)],
+    [9, 'liberty', Date.new(2015, 9, 17)],
+    [10, 'mitaka', Date.new(2016, 4, 8)],
   ]
 end
