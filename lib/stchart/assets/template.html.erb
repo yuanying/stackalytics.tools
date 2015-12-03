@@ -5,6 +5,7 @@
   <script src="http://code.jquery.com/jquery.js"></script>
   <script src="js/bootstrap.min.js"></script>
   <script src="js/Chart.min.js"></script>
+  <script src="js/stackalytics.js"></script>
   <title>Stackalytics.Chart</title>
   <style type="text/css">
   .container {width: auto;}
@@ -51,6 +52,7 @@
     },
     <% end %>
   ];
+  var labels = [<%= person_labels.map{|l| "\"#{short_date(l)}\"" }.join(', ') %>]
   var filterDatasets = function(id, chart_off) {
     var rtn = [];
     for(var i=0; i<datasets.length; i++) {
@@ -67,13 +69,13 @@
   $(function() {
     var showAll = function() {
       $('.person').removeClass("chart_off");
-      draw(filterDatasets('all', false));
+      draw(labels, filterDatasets('all', false));
     };
     $('#showAll').click(showAll);
 
     var hideAll = function() {
       $('.person').addClass("chart_off");
-      draw(filterDatasets('all', true));
+      draw(labels, filterDatasets('all', true));
     };
     $('#hideAll').click(hideAll);
 
@@ -87,7 +89,7 @@
         $(this).addClass("chart_off");
         chart_off = true;
       }
-      draw(filterDatasets(name, chart_off));
+      draw(labels, filterDatasets(name, chart_off));
     };
     <% person_map.each do |id, metric| %>
     $('#<%=_short_id(id)%>').click(switcher);
@@ -95,20 +97,8 @@
 
 
     var ctx = document.getElementById("canvas").getContext("2d");
-    var draw = function(datasets){
-      var lineChartData = {
-        labels : [<%= person_labels.map{|l| "\"#{short_date(l)}\"" }.join(', ') %>],
-        datasets : datasets
-      }
-      if (window.myLine) {
-        window.myLine.destroy();
-      }
-      window.myLine = new Chart(ctx).Line(lineChartData, {
-        bezierCurve: false,
-        responsive: true
-      });
-    };
-    draw(datasets);
+    var draw = stackalytics.createDrawFunction(ctx);
+    draw(labels, datasets);
   });
   </script>
 </head>

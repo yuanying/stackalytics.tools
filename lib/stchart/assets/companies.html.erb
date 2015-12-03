@@ -5,6 +5,7 @@
   <script src="http://code.jquery.com/jquery.js"></script>
   <script src="js/bootstrap.min.js"></script>
   <script src="js/Chart.min.js"></script>
+  <script src="js/stackalytics.js"></script>
   <title>Stackalytics.Chart</title>
   <style type="text/css">
   .container {width: auto;}
@@ -69,11 +70,13 @@
     },
     <% end %>
   ];
-  var peaple_labels = [<%= person_labels.map{|l| "\"#{short_date(l)}\"" }.join(', ') %>];
+  var people_labels = [<%= person_labels.map{|l| "\"#{short_date(l)}\"" }.join(', ') %>];
 
   $(function() {
     var commit_ctx = document.getElementById("commitcanvas").getContext("2d");
     var people_ctx = document.getElementById("peoplecanvas").getContext("2d");
+    var commitDraw = stackalytics.createDrawFunction(commit_ctx);
+    var peopleDraw = stackalytics.createDrawFunction(people_ctx);
     var draw = function(ctx, labels, datasets){
       var lineChartData = {
         labels : labels,
@@ -87,8 +90,8 @@
         responsive: true
       });
     };
-    draw(commit_ctx, company_labels, commit_datasets);
-    draw(people_ctx, peaple_labels, people_datasets);
+    commitDraw(company_labels, commit_datasets);
+    peopleDraw(people_labels, people_datasets);
   });
   </script>
 </head>
