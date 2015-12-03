@@ -37,12 +37,12 @@ module Stchart
             raw_data[day] = JSON.parse( json_data )
           end
         rescue => ex
-          puts "#{data_uri} failed" 
+          puts "#{data_uri} failed"
           raise ex
         end
         open(tmp_file, 'w') do |file|
           file.write( json_data )
-        end
+        end unless ::Date.today == ::Date.parse(actual_day.to_s)
       end
 
       return raw_data
