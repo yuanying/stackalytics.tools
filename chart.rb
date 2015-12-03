@@ -49,7 +49,14 @@ companies.each do |company|
     reviews_labels,
     reviews_data,
   )
-  xlsx_generate(xlsx_path, company, commits_labels, commits_data)
+  xlsx_generate(
+    xlsx_path, 
+    company,
+    commits_labels,
+    commits_data,
+    reviews_labels,
+    reviews_data,
+  )
 
   person_labels = commits_labels
   person_maps[company] = commits_data
