@@ -31,11 +31,28 @@ companies.each do |company|
   html_path = File.join(ROOT, "#{company}.html")
   xlsx_path = File.join(ROOT, "#{company}.xlsx")
 
-  person_labels, person_map = fetch_engineers(release: release, company: company)
-  html_generate(html_path, company, person_labels, person_map)
-  xlsx_generate(xlsx_path, company, person_labels, person_map)
+  commits_labels, commits_data = fetch_engineers(
+    release: release,
+    company: company,
+    metric: 'commits',
+  )
+  reviews_labels, reviews_data = fetch_engineers(
+    release: release,
+    company: company,
+    metric: 'marks',
+  )
+  html_generate(
+    html_path,
+    company,
+    commits_labels,
+    commits_data,
+    reviews_labels,
+    reviews_data,
+  )
+  xlsx_generate(xlsx_path, company, commits_labels, commits_data)
 
-  person_maps[company] = person_map
+  person_labels = commits_labels
+  person_maps[company] = commits_data
 end
 
 company_labels, company_maps = fetch_companies(release: release, companies: companies)

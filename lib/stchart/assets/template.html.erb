@@ -36,8 +36,8 @@
   }
   </style>
   <script>
-  var datasets = [
-    <% person_map.each_with_index do |(id, metric), index| %>
+  var datasets = commitsDataset = [
+    <% commits_data.each_with_index do |(id, metric), index| %>
       <% color = get_color(index) %>
     {
       label: "<%= _short_id(id) %>",
@@ -52,49 +52,92 @@
     },
     <% end %>
   ];
-  var labels = [<%= person_labels.map{|l| "\"#{short_date(l)}\"" }.join(', ') %>]
+  var labels = commitsLabel = [<%= commits_labels.map{|l| "\"#{short_date(l)}\"" }.join(', ') %>]
+  var reviewsDataset = [
+    <% reviews_data.each_with_index do |(id, metric), index| %>
+      <% color = get_color(index) %>
+    {
+      label: "<%= _short_id(id) %>",
+      fillColor : "<%= color[1] %>",
+      strokeColor : "<%= color[0] %>",
+      pointColor : "<%= color[0] %>",
+      pointStrokeColor : "#fff",
+      pointHighlightFill : "#fff",
+      pointHighlightStroke : "<%= color[0] %>",
+      data : [ <%= metric.join(', ') %> ],
+      chart_off: false
+    },
+    <% end %>
+  ];
+  var reviewsLabel = [<%= reviews_labels.map{|l| "\"#{short_date(l)}\"" }.join(', ') %>]
+
   var filterDatasets = function(id, chart_off) {
-    var rtn = [];
-    for(var i=0; i<datasets.length; i++) {
-      if (id == 'all' || datasets[i].label == id ) {
-        datasets[i].chart_off = chart_off;
-      }
-      if (!datasets[i].chart_off) {
-        rtn.push(datasets[i]);
+    var data = [reviewsDataset, commitsDataset];
+    for(var j=0; j<data.length; j++) {
+      var sets = data[j]
+      for(var i=0; i<sets.length; i++) {
+        if (id == 'all' || sets[i].label == id ) {
+          sets[i].chart_off = chart_off;
+        }
       }
     }
-    return rtn;
   };
+  var isChartoff = function(name) {
+    for(var i=0; i<datasets.length; i++) {
+      if (datasets[i].label == name ) {
+        return datasets[i].chart_off;
+      }
+    }
+  }
 
   $(function() {
+    $('#commitsLink').click(function() {
+      labels = commitsLabel;
+      datasets = commitsDataset;
+      draw(labels, datasets);
+    });
+    $('#reviewsLink').click(function() {
+      labels = reviewsLabel;
+      datasets = reviewsDataset;
+      draw(labels, datasets);
+    });
+
+    jQuery(document).ready(function ($) {
+      $('#tabs').tab();
+    });
     var showAll = function() {
       $('.person').removeClass("chart_off");
-      draw(labels, filterDatasets('all', false));
+      filterDatasets('all', false)
+      draw(labels, datasets);
     };
     $('#showAll').click(showAll);
 
     var hideAll = function() {
       $('.person').addClass("chart_off");
-      draw(labels, filterDatasets('all', true));
+      filterDatasets('all', true)
+      draw(labels, datasets);
     };
     $('#hideAll').click(hideAll);
 
     var switcher = function() {
-      var name = this.id;
+      var name = this.title;
       var chart_off = $(this).hasClass("chart_off");
       if (chart_off) {
-        $(this).removeClass("chart_off");
+        $('[title='+name+']').removeClass("chart_off");
         chart_off = false;
       } else {
-        $(this).addClass("chart_off");
+        $('[title='+name+']').addClass("chart_off");
         chart_off = true;
       }
-      draw(labels, filterDatasets(name, chart_off));
+      filterDatasets(name, chart_off);
+      draw(labels, datasets);
     };
-    <% person_map.each do |id, metric| %>
-    $('#<%=_short_id(id)%>').click(switcher);
+    <% commits_data.each do |id, metric| %>
+    $('#commits_<%=_short_id(id)%>').click(switcher);
     <% end %>
-
+    <% reviews_data.each do |id, metric| %>
+    $('#reviews_<%=_short_id(id)%>').click(switcher);
+    <% end %>
 
     var ctx = document.getElementById("canvas").getContext("2d");
     var draw = stackalytics.createDrawFunction(ctx);
@@ -118,43 +161,73 @@
     </a>
   </div>
 
-  <h2>Number of Commit</h2>
-
   <div>
     <canvas id="canvas" height="600" width="1200"></canvas>
   </div>
 
-  <div class="btn-group" role="group" aria-label="...">
+  <div class="btn-group pull-right" role="group" aria-label="...">
     <button id='showAll' type="button" class="btn btn-success">Show ALL</button>
     <button id='hideAll' type="button" class="btn btn-danger">Hide All</button>
   </div>
 
-  <div>
-    <table class='table table-hover'>
-      <tr>
-        <th></th>
-        <th></th>
-        <% person_labels.each do |label| %>
-          <th><%= short_date(label) %></th>
+  <ul id='tabs' class="nav nav-tabs" data-tabs="tabs">
+    <li role="presentation" class="active"><a id='commitsLink' data-toggle="tab" href="#commits">Commits</a></li>
+    <li role="presentation"><a id='reviewsLink' data-toggle="tab" href="#reviews">Reviews</a></li>
+  </ul>
+
+  <div class="tab-content">
+
+    <div class="tab-pane active" id="commits">
+      <table class='table table-hover'>
+        <tr>
+          <th></th>
+          <th></th>
+          <% commits_labels.each do |label| %>
+            <th><%= short_date(label) %></th>
+          <% end %>
+        </tr>
+        <% commits_data.each_with_index do |(id, metric), index| %>
+          <% color = get_color(index) %>
+        <tr class='person' id='commits_<%=_short_id(id)%>' title='<%=_short_id(id)%>'>
+          <td style="background-color: <%= color[0] %>;">&nbsp;</td>
+          <td class='name'>
+            <a href="http://stackalytics.com/?user_id=<%=id%>">
+              <%= _short_id(id) %>
+            </a>
+          </td>
+          <% metric.each do |m| %>
+          <td class='metric'><%= m %></td>
+          <% end %>
+        </tr>
         <% end %>
-      </tr>
-      <% person_map.each_with_index do |(id, metric), index| %>
-        <% color = get_color(index) %>
-      <tr class='person' id='<%=_short_id(id)%>'>
-        <td style="background-color: <%= color[0] %>;">&nbsp;</td>
-        <td class='name'>
-          <a href="http://stackalytics.com/?user_id=<%=id%>">
-            <%= _short_id(id) %>
-          </a>
-        </td>
-        <% metric.each do |m| %>
-        <td class='metric'><%= m %></td>
+      </table>
+    </div>
+
+    <div class="tab-pane" id="reviews">
+      <table class='table table-hover'>
+        <tr>
+          <th></th>
+          <th></th>
+          <% reviews_labels.each do |label| %>
+            <th><%= short_date(label) %></th>
+          <% end %>
+        </tr>
+        <% reviews_data.each_with_index do |(id, metric), index| %>
+          <% color = get_color(index) %>
+        <tr class='person' id='reviews_<%=_short_id(id)%>' title='<%=_short_id(id)%>'>
+          <td style="background-color: <%= color[0] %>;">&nbsp;</td>
+          <td class='name'>
+            <a href="http://stackalytics.com/?user_id=<%=id%>">
+              <%= _short_id(id) %>
+            </a>
+          </td>
+          <% metric.each do |m| %>
+          <td class='metric'><%= m %></td>
+          <% end %>
+        </tr>
         <% end %>
-      </tr>
-      <% end %>
-    </table>
+      </table>    </div>
   </div>
-</div>
 
 <footer class="footer">
   <div class="container">

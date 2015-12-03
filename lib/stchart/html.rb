@@ -8,7 +8,14 @@ module Stchart
     include Date
     include Common
 
-    def html_generate(html_path, company, person_labels, person_map)
+    def html_generate(
+      html_path,
+      company,
+      commits_labels,
+      commits_data,
+      reviews_labels,
+      reviews_data
+    )
       open(html_path, 'w') do |io|
         open(File.join(File.dirname(__FILE__), 'assets', 'template.html.erb')) do |t|
           io.write(ERB.new(t.read).result(binding))

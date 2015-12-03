@@ -52,7 +52,7 @@
     },
     <% end %>
   ];
-  var company_labels = [<%= company_labels.map{|l| "\"#{short_date(l)}\"" }.join(', ') %>];
+  var commit_labels = [<%= company_labels.map{|l| "\"#{short_date(l)}\"" }.join(', ') %>];
 
   var people_datasets = [
     <% person_maps.each_with_index do |(id, metric), index| %>
@@ -90,7 +90,7 @@
         responsive: true
       });
     };
-    commitDraw(company_labels, commit_datasets);
+    commitDraw(commit_labels, commit_datasets);
     peopleDraw(people_labels, people_datasets);
   });
   </script>

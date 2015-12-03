@@ -9,8 +9,9 @@ module Stchart
         company: 'NEC',
         interval: 7,
         target: 'engineers',
+        metric: 'commits',
         flag: nil)
-      base_uri = "#{BASE_URI}#{target}?release=#{release}&metric=commits&company=#{company}"
+      base_uri = "#{BASE_URI}#{target}?release=#{release}&metric=#{metric}&company=#{company}"
 
       tmp_dir = File.join(Stchart::ROOT, '.tmp', company, target)
       FileUtils.mkdir_p(tmp_dir)
@@ -23,7 +24,7 @@ module Stchart
         flag: flag
       ) do |day, actual_day|
 
-        tmp_file = File.join(tmp_dir, "#{actual_day.to_i.to_s}.json")
+        tmp_file = File.join(tmp_dir, "#{actual_day.to_i.to_s}.#{metric}.json")
         unless File.file?(tmp_file)
           data_uri = "#{base_uri}&end_date=#{actual_day.to_i}"
         else
@@ -42,7 +43,7 @@ module Stchart
       return raw_data
     end
 
-    def fetch_companies(release: 'mitaka', companies: [])
+    def fetch_companies(release: 'mitaka', metric: 'commits', companies: [])
       company_labels = []
       company_map = {}
       companies.each do |company|
@@ -50,7 +51,8 @@ module Stchart
           release: release,
           company: company,
           target: 'companies',
-          interval: 1
+          interval: 1,
+          metric: metric,
         )
         company_labels = raw_data.keys
         series = []
@@ -68,12 +70,13 @@ module Stchart
       return [company_labels, company_map]
     end
 
-    def fetch_engineers(release: 'mitaka', company: 'NEC')
+    def fetch_engineers(release: 'mitaka', metric: 'commits', company: 'NEC')
       raw_data = fetch_company(
         release: release,
         company: company,
         target: 'engineers',
         interval: 7,
+        metric: metric,
         flag: :friday
       )
 
