@@ -31,9 +31,14 @@ module Stchart
           data_uri = tmp_file
         end
         json_data = nil
-        open(data_uri) do |io|
-          json_data = io.read
-          raw_data[day] = JSON.parse( json_data )
+        begin
+          open(data_uri) do |io|
+            json_data = io.read
+            raw_data[day] = JSON.parse( json_data )
+          end
+        rescue => ex
+          puts "#{data_uri} failed" 
+          raise ex
         end
         open(tmp_file, 'w') do |file|
           file.write( json_data )
