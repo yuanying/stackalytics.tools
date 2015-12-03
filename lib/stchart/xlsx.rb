@@ -5,6 +5,7 @@ require 'stchart/common'
 module Stchart
   module Xlsx
     include Common
+    include Date
 
     def add_sheet_for_engeneer(package, name, company, labels, data)
       package.workbook.add_worksheet(:name => name) do |sheet|
@@ -48,12 +49,45 @@ module Stchart
       end
     end
 
+    def _zip_company_labels(labels)
+      return labels.select {|l| friday?(l) }
+    end
+
+    def _zip_company_metric(labels, metric)
+      rtn = []
+      labels.each_with_index do |l, index|
+        if friday?(l)
+          rtn << metric[index]
+        end
+      end
+      return rtn
+    end
+
+    def add_sheet_for_company(package, name, labels, data)
+      package.workbook.add_worksheet(:name => "#{name} (1)") do |sheet|
+        sheet.add_row(_zip_company_labels(labels).dup.unshift(''))
+        data.each do |id, metric|
+          sheet.add_row([id] + _zip_company_metric(labels, metric))
+        end
+      end
+
+      package.workbook.add_worksheet(:name => "#{name} (2)") do |sheet|
+        sheet.add_row(labels.dup.unshift(''))
+        data.each do |id, metric|
+          sheet.add_row([id] + metric)
+        end
+      end
+    end
+
     def xlsx_companies_compare(
       xlsx_path,
       person_labels,
       person_maps,
-      company_labels,
-      company_maps)
+      commits_labels,
+      commits_data,
+      reviews_labels,
+      reviews_data
+    )
       person_maps = person_maps.inject( {} ) do |a, (k,v)|
         a[k] ||= {}
         a[k]['commit'] = _zip_commit_number(person_labels.size, v)
@@ -62,19 +96,8 @@ module Stchart
       end
 
       Axlsx::Package.new do |package|
-        package.workbook.add_worksheet(:name => "Commits (1)") do |sheet|
-          sheet.add_row(person_labels.dup.unshift(''))
-          person_maps.each do |id, metric|
-            sheet.add_row([id] + metric['commit'])
-          end
-        end
-
-        package.workbook.add_worksheet(:name => "Commits (2)") do |sheet|
-          sheet.add_row(company_labels.dup.unshift(''))
-          company_maps.each do |id, metric|
-            sheet.add_row([id] + metric)
-          end
-        end
+        add_sheet_for_company(package, 'Commits', commits_labels, commits_data)
+        add_sheet_for_company(package, 'Reviews', reviews_labels, reviews_data)
 
         package.workbook.add_worksheet(:name => "Peaple") do |sheet|
           sheet.add_row(person_labels.dup.unshift(''))

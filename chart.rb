@@ -90,6 +90,6 @@ xlsx_companies_compare(
   person_maps,
   commits_labels,
   commits_data,
-  # reviews_labels,
-  # reviews_data
+  reviews_labels,
+  reviews_data
 )
