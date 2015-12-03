@@ -36,8 +36,8 @@
   }
   </style>
   <script>
-  var commit_datasets = [
-    <% company_maps.each_with_index do |(id, metric), index| %>
+  var commitDatasets = [
+    <% commits_data.each_with_index do |(id, metric), index| %>
       <% color = get_color(index) %>
     {
       label: "<%= id %>",
@@ -52,9 +52,27 @@
     },
     <% end %>
   ];
-  var commit_labels = [<%= company_labels.map{|l| "\"#{short_date(l)}\"" }.join(', ') %>];
+  var commitLabels = [<%= commits_labels.map{|l| "\"#{short_date(l)}\"" }.join(', ') %>];
 
-  var people_datasets = [
+  var reviewDatasets = [
+    <% reviews_data.each_with_index do |(id, metric), index| %>
+      <% color = get_color(index) %>
+    {
+      label: "<%= id %>",
+      fillColor : "<%= color[1] %>",
+      strokeColor : "<%= color[0] %>",
+      pointColor : "<%= color[0] %>",
+      pointStrokeColor : "#fff",
+      pointHighlightFill : "#fff",
+      pointHighlightStroke : "<%= color[0] %>",
+      data : [ <%= metric.join(', ') %> ],
+      chart_off: false
+    },
+    <% end %>
+  ];
+  var reviewLabels = [<%= reviews_labels.map{|l| "\"#{short_date(l)}\"" }.join(', ') %>];
+
+  var engineerDatasets = [
     <% person_maps.each_with_index do |(id, metric), index| %>
       <% color = get_color(index) %>
     {
@@ -70,28 +88,19 @@
     },
     <% end %>
   ];
-  var people_labels = [<%= person_labels.map{|l| "\"#{short_date(l)}\"" }.join(', ') %>];
+  var engineerLabels = [<%= person_labels.map{|l| "\"#{short_date(l)}\"" }.join(', ') %>];
 
   $(function() {
     var commit_ctx = document.getElementById("commitcanvas").getContext("2d");
+    var review_ctx = document.getElementById("reviewcanvas").getContext("2d");
     var people_ctx = document.getElementById("peoplecanvas").getContext("2d");
     var commitDraw = stackalytics.createDrawFunction(commit_ctx);
+    var reviewDraw = stackalytics.createDrawFunction(review_ctx);
     var peopleDraw = stackalytics.createDrawFunction(people_ctx);
-    var draw = function(ctx, labels, datasets){
-      var lineChartData = {
-        labels : labels,
-        datasets : datasets
-      }
-      if (window.myLine) {
-        window.myLine.destroy();
-      }
-      window.myLine = new Chart(ctx).Line(lineChartData, {
-        bezierCurve: false,
-        responsive: true
-      });
-    };
-    commitDraw(commit_labels, commit_datasets);
-    peopleDraw(people_labels, people_datasets);
+
+    commitDraw(commitLabels, commitDatasets);
+    reviewDraw(reviewLabels, reviewDatasets);
+    peopleDraw(engineerLabels , engineerDatasets);
   });
   </script>
 </head>
@@ -119,17 +128,51 @@
       <tr>
         <th></th>
         <th></th>
-        <% person_labels.each do |label| %>
+        <% commits_labels.each do |label| %>
+          <% if friday?(label) %>
           <th><%= short_date(label) %></th>
+          <% end %>
         <% end %>
       </tr>
-      <% person_maps.each_with_index do |(id, metric), index| %>
+      <% commits_data.each_with_index do |(id, metric), index| %>
         <% color = get_color(index) %>
       <tr id='<%=id%>'>
         <td style="background-color: <%= color[0] %>;">&nbsp;</td>
         <td class='name'><a href='<%=id%>.html'><%= id %></a></td>
-        <% metric['commit'].each do |m| %>
-        <td class='metric'><%= m %></td>
+        <% metric.each_with_index do |m, i| %>
+          <% if friday?(commits_labels[i]) %>
+          <td class='metric'><%= m %></td>
+          <% end %>
+        <% end %>
+      </tr>
+      <% end %>
+    </table>
+  </div>
+
+  <h2>Number of Review</h2>
+  <div>
+    <canvas id="reviewcanvas" height="600" width="1200"></canvas>
+  </div>
+  <div>
+    <table class='table table-hover'>
+      <tr>
+        <th></th>
+        <th></th>
+        <% reviews_labels.each do |label| %>
+          <% if friday?(label) %>
+          <th><%= short_date(label) %></th>
+          <% end %>
+        <% end %>
+      </tr>
+      <% reviews_data.each_with_index do |(id, metric), index| %>
+        <% color = get_color(index) %>
+      <tr id='<%=id%>'>
+        <td style="background-color: <%= color[0] %>;">&nbsp;</td>
+        <td class='name'><a href='<%=id%>.html'><%= id %></a></td>
+        <% metric.each_with_index do |m, i| %>
+          <% if friday?(commits_labels[i]) %>
+          <td class='metric'><%= m %></td>
+          <% end %>
         <% end %>
       </tr>
       <% end %>

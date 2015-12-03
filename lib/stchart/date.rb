@@ -27,6 +27,10 @@ module Stchart
       date.beginning_of_week + 6.days
     end
 
+    def friday?(date)
+      ::Date.new(*date.split('/').map{|t| t.to_i }).friday?
+    end
+
     def release_dates(release: 'mitaka')
       release = Stchart::RELEASES.find{|v| v[1] == release }
       release_begin_date = Stchart::RELEASES[release[0] - 1][2]

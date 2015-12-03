@@ -50,7 +50,7 @@ companies.each do |company|
     reviews_data,
   )
   xlsx_generate(
-    xlsx_path, 
+    xlsx_path,
     company,
     commits_labels,
     commits_data,
@@ -62,21 +62,34 @@ companies.each do |company|
   person_maps[company] = commits_data
 end
 
-company_labels, company_maps = fetch_companies(release: release, companies: companies)
+commits_labels, commits_data = fetch_companies(
+  release: release,
+  companies: companies,
+  metric: 'commits'
+)
+reviews_labels, reviews_data = fetch_companies(
+  release: release,
+  companies: companies,
+  metric: 'marks'
+)
 
 html_path = File.join(ROOT, "index.html")
 html_companies_compare(
   html_path,
   person_labels,
   person_maps,
-  company_labels,
-  company_maps
+  commits_labels,
+  commits_data,
+  reviews_labels,
+  reviews_data
 )
 xlsx_path = File.join(ROOT, "index.xlsx")
 xlsx_companies_compare(
   xlsx_path,
   person_labels,
   person_maps,
-  company_labels,
-  company_maps
+  commits_labels,
+  commits_data,
+  # reviews_labels,
+  # reviews_data
 )

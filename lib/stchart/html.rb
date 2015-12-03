@@ -27,8 +27,11 @@ module Stchart
       html_path,
       person_labels,
       person_maps,
-      company_labels,
-      company_maps)
+      commits_labels,
+      commits_data,
+      reviews_labels,
+      reviews_data
+    )
       person_maps = person_maps.inject( {} ) do |a, (k,v)|
         a[k] ||= {}
         a[k]['commit'] = _zip_commit_number(person_labels.size, v)
