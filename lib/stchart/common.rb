@@ -4,6 +4,22 @@ module Stchart
       id.split('@')[0]
     end
 
+    def delta_to_class(delta)
+      return 'zero' if delta == 0
+      _delta = delta / 3
+      _class = ''
+      case _delta
+      when 1
+        _class = 'level-one'
+      when 2
+        _class = 'level-two'
+      when 3
+        _class = 'level-three'
+      end
+      _class += ' great' if delta > 9
+      return _class
+    end
+
     def _zip_commit_number(metric_size, person_map)
       metrics = []
       metric_size.times do |i|

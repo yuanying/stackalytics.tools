@@ -2,39 +2,12 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+  <link href="css/stackalytics.css" rel="stylesheet" media="screen">
   <script src="http://code.jquery.com/jquery.js"></script>
   <script src="js/bootstrap.min.js"></script>
   <script src="js/Chart.min.js"></script>
   <script src="js/stackalytics.js"></script>
   <title>Stackalytics.Chart</title>
-  <style type="text/css">
-  .container {width: auto;}
-  .chart_off {
-    color: #cccccc;
-  }
-  /* Sticky footer styles
-  -------------------------------------------------- */
-  html {
-    position: relative;
-    min-height: 100%;
-  }
-  body {
-    /* Margin bottom by footer height */
-    margin-bottom: 60px;
-  }
-  .footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    /* Set the fixed height of the footer here */
-    height: 60px;
-    background-color: #f5f5f5;
-  }
-  .footer .container {
-    padding: 1em;
-    padding-left: 3em;
-  }
-  </style>
   <script>
   var commitDatasets = [
     <% commits_data.each_with_index do |(id, metric), index| %>
@@ -139,9 +112,13 @@
       <tr id='<%=id%>'>
         <td style="background-color: <%= color[0] %>;">&nbsp;</td>
         <td class='name'><a href='<%=id%>.html'><%= id %></a></td>
+        <% prev_m = 0 %>
         <% metric.each_with_index do |m, i| %>
           <% if friday?(commits_labels[i]) %>
-          <td class='metric'><%= m %></td>
+          <td class='metric'>
+            <%= m %> <span>(<%= m - prev_m %>)</span>
+            <% prev_m = m %>
+          </td>
           <% end %>
         <% end %>
       </tr>
@@ -169,9 +146,13 @@
       <tr id='<%=id%>'>
         <td style="background-color: <%= color[0] %>;">&nbsp;</td>
         <td class='name'><a href='<%=id%>.html'><%= id %></a></td>
+        <% prev_m = 0 %>
         <% metric.each_with_index do |m, i| %>
           <% if friday?(commits_labels[i]) %>
-          <td class='metric'><%= m %></td>
+          <td class='metric'>
+            <%= m %> <span>(<%= m - prev_m %>)</span>
+            <% prev_m = m %>
+          </td>
           <% end %>
         <% end %>
       </tr>
@@ -197,8 +178,12 @@
       <tr id='<%=id%>'>
         <td style="background-color: <%= color[0] %>;">&nbsp;</td>
         <td class='name'><a href='<%=id%>.html'><%= id %></a></td>
+        <% prev_m = 0 %>
         <% metric['people'].each do |m| %>
-        <td class='metric'><%= m %></td>
+        <td class='metric'>
+          <%= m %> <span>(<%= m - prev_m %>)</span>
+          <% prev_m = m %>
+        </td>
         <% end %>
       </tr>
       <% end %>
