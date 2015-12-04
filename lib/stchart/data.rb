@@ -24,15 +24,20 @@ module Stchart
         flag: flag
       ) do |day, actual_day|
 
+        opts = nil
         tmp_file = File.join(tmp_dir, "#{actual_day.to_i.to_s}.#{metric}.json")
         unless File.file?(tmp_file)
           data_uri = "#{base_uri}&end_date=#{actual_day.to_i}"
+          opts = {
+            'Cache-Control' => 'no-cache',
+            'Pragma' => 'no-cache'
+          }
         else
           data_uri = tmp_file
         end
         json_data = nil
         begin
-          open(data_uri) do |io|
+          open(data_uri, opts) do |io|
             json_data = io.read
             raw_data[day] = JSON.parse( json_data )
           end
