@@ -23,6 +23,20 @@ module Stchart
       end
     end
 
+    def html_engineer_generate(
+      html_path,
+      company,
+      metric,
+      labels,
+      datasets
+    )
+      open(html_path, 'w') do |io|
+        open(File.join(File.dirname(__FILE__), 'assets', 'table.html.erb')) do |t|
+          io.write(ERB.new(t.read).result(binding))
+        end
+      end
+    end
+
     def html_companies_compare(
       html_path,
       person_labels,

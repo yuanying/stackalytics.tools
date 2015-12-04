@@ -10,7 +10,7 @@
   <title>Stackalytics.Chart</title>
   <script>
   var datasets = commitsDataset = [
-    <% commits_data.each_with_index do |(id, metric), index| %>
+    <% commits_data.each_with_index do |(id, data), index| %>
       <% color = get_color(index) %>
     {
       label: "<%= _short_id(id) %>",
@@ -20,14 +20,14 @@
       pointStrokeColor : "#fff",
       pointHighlightFill : "#fff",
       pointHighlightStroke : "<%= color[0] %>",
-      data : [ <%= metric.join(', ') %> ],
+      data : [ <%= data.join(', ') %> ],
       chart_off: false
     },
     <% end %>
   ];
   var labels = commitsLabel = [<%= commits_labels.map{|l| "\"#{short_date(l)}\"" }.join(', ') %>]
   var reviewsDataset = [
-    <% reviews_data.each_with_index do |(id, metric), index| %>
+    <% reviews_data.each_with_index do |(id, data), index| %>
       <% color = get_color(index) %>
     {
       label: "<%= _short_id(id) %>",
@@ -37,7 +37,7 @@
       pointStrokeColor : "#fff",
       pointHighlightFill : "#fff",
       pointHighlightStroke : "<%= color[0] %>",
-      data : [ <%= metric.join(', ') %> ],
+      data : [ <%= data.join(', ') %> ],
       chart_off: false
     },
     <% end %>
@@ -105,10 +105,10 @@
       filterDatasets(name, chart_off);
       draw(labels, datasets);
     };
-    <% commits_data.each do |id, metric| %>
+    <% commits_data.each do |id, _| %>
     $('#commits_<%=_short_id(id)%>').click(switcher);
     <% end %>
-    <% reviews_data.each do |id, metric| %>
+    <% reviews_data.each do |id, _| %>
     $('#reviews_<%=_short_id(id)%>').click(switcher);
     <% end %>
 
@@ -129,6 +129,8 @@
 
   <div>
     <a class='btn btn-primary' href='<%=company%>.xlsx'>Excel</a>
+    <a class='btn btn-default' href='<%=company%>.commits.html'>Table (Commits)</a>
+    <a class='btn btn-default' href='<%=company%>.reviews.html'>Table (Reviews)</a>
     <a class='btn btn-default' href="http://stackalytics.com/?company=<%=company%>">
       Stackalytics
     </a>
@@ -159,7 +161,7 @@
             <th><%= short_date(label) %></th>
           <% end %>
         </tr>
-        <% commits_data.each_with_index do |(id, metric), index| %>
+        <% commits_data.each_with_index do |(id, data), index| %>
           <% color = get_color(index) %>
         <tr class='person' id='commits_<%=_short_id(id)%>' title='<%=_short_id(id)%>'>
           <td style="background-color: <%= color[0] %>;">&nbsp;</td>
@@ -169,7 +171,7 @@
             </a>
           </td>
           <% prev_m = 0 %>
-          <% metric.each do |m| %>
+          <% data.each do |m| %>
           <td class='metric <%= delta_to_class(m - prev_m)%>'>
             <%= m %> <span>(<%= m - prev_m %>)</span>
             <% prev_m = m %>
@@ -189,7 +191,7 @@
             <th><%= short_date(label) %></th>
           <% end %>
         </tr>
-        <% reviews_data.each_with_index do |(id, metric), index| %>
+        <% reviews_data.each_with_index do |(id, data), index| %>
           <% color = get_color(index) %>
         <tr class='person' id='reviews_<%=_short_id(id)%>' title='<%=_short_id(id)%>'>
           <td style="background-color: <%= color[0] %>;">&nbsp;</td>
@@ -199,7 +201,7 @@
             </a>
           </td>
           <% prev_m = 0 %>
-          <% metric.each do |m| %>
+          <% data.each do |m| %>
           <td class='metric <%= delta_to_class(m - prev_m)%>'>
             <%= m %> <span>(<%= m - prev_m %>)</span>
             <% prev_m = m %>
@@ -207,9 +209,11 @@
           <% end %>
         </tr>
         <% end %>
-      </table>    </div>
+      </table>
+    </div>
   </div>
 
+<!-- .container --></div>
 <footer class="footer">
   <div class="container">
     <p class="text-muted"><a href="https://github.com/yuanying/stackalytics.tools">stackalytics.tools</a></p>

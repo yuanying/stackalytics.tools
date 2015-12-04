@@ -10,7 +10,7 @@
   <title>Stackalytics.Chart</title>
   <script>
   var commitDatasets = [
-    <% commits_data.each_with_index do |(id, metric), index| %>
+    <% commits_data.each_with_index do |(id, data), index| %>
       <% color = get_color(index) %>
     {
       label: "<%= id %>",
@@ -20,7 +20,7 @@
       pointStrokeColor : "#fff",
       pointHighlightFill : "#fff",
       pointHighlightStroke : "<%= color[0] %>",
-      data : [ <%= metric.join(', ') %> ],
+      data : [ <%= data.join(', ') %> ],
       chart_off: false
     },
     <% end %>
@@ -28,7 +28,7 @@
   var commitLabels = [<%= commits_labels.map{|l| "\"#{short_date(l)}\"" }.join(', ') %>];
 
   var reviewDatasets = [
-    <% reviews_data.each_with_index do |(id, metric), index| %>
+    <% reviews_data.each_with_index do |(id, data), index| %>
       <% color = get_color(index) %>
     {
       label: "<%= id %>",
@@ -38,7 +38,7 @@
       pointStrokeColor : "#fff",
       pointHighlightFill : "#fff",
       pointHighlightStroke : "<%= color[0] %>",
-      data : [ <%= metric.join(', ') %> ],
+      data : [ <%= data.join(', ') %> ],
       chart_off: false
     },
     <% end %>
@@ -46,7 +46,7 @@
   var reviewLabels = [<%= reviews_labels.map{|l| "\"#{short_date(l)}\"" }.join(', ') %>];
 
   var engineerDatasets = [
-    <% person_maps.each_with_index do |(id, metric), index| %>
+    <% person_maps.each_with_index do |(id, data), index| %>
       <% color = get_color(index) %>
     {
       label: "<%= id %>",
@@ -56,7 +56,7 @@
       pointStrokeColor : "#fff",
       pointHighlightFill : "#fff",
       pointHighlightStroke : "<%= color[0] %>",
-      data : [ <%= metric['people'].join(', ') %> ],
+      data : [ <%= data['people'].join(', ') %> ],
       chart_off: false
     },
     <% end %>
@@ -107,13 +107,13 @@
           <% end %>
         <% end %>
       </tr>
-      <% commits_data.each_with_index do |(id, metric), index| %>
+      <% commits_data.each_with_index do |(id, data), index| %>
         <% color = get_color(index) %>
       <tr id='<%=id%>'>
         <td style="background-color: <%= color[0] %>;">&nbsp;</td>
         <td class='name'><a href='<%=id%>.html'><%= id %></a></td>
         <% prev_m = 0 %>
-        <% metric.each_with_index do |m, i| %>
+        <% data.each_with_index do |m, i| %>
           <% if friday?(commits_labels[i]) %>
           <td class='metric'>
             <%= m %> <span>(<%= m - prev_m %>)</span>
@@ -141,13 +141,13 @@
           <% end %>
         <% end %>
       </tr>
-      <% reviews_data.each_with_index do |(id, metric), index| %>
+      <% reviews_data.each_with_index do |(id, data), index| %>
         <% color = get_color(index) %>
       <tr id='<%=id%>'>
         <td style="background-color: <%= color[0] %>;">&nbsp;</td>
         <td class='name'><a href='<%=id%>.html'><%= id %></a></td>
         <% prev_m = 0 %>
-        <% metric.each_with_index do |m, i| %>
+        <% data.each_with_index do |m, i| %>
           <% if friday?(commits_labels[i]) %>
           <td class='metric'>
             <%= m %> <span>(<%= m - prev_m %>)</span>
@@ -173,14 +173,14 @@
           <th><%= short_date(label) %></th>
         <% end %>
       </tr>
-      <% person_maps.each_with_index do |(id, metric), index| %>
+      <% person_maps.each_with_index do |(id, data), index| %>
         <% color = get_color(index) %>
       <tr id='<%=id%>'>
         <td style="background-color: <%= color[0] %>;">&nbsp;</td>
         <td class='name'><a href='<%=id%>.html'><%= id %></a></td>
         <% prev_m = 0 %>
-        <% metric['people'].each do |m| %>
-        <td class='metric'>
+        <% data['people'].each do |m| %>
+        <td class='data'>
           <%= m %> <span>(<%= m - prev_m %>)</span>
           <% prev_m = m %>
         </td>

@@ -29,6 +29,8 @@ person_labels = []
 person_maps = {}
 companies.each do |company|
   html_path = File.join(ROOT, "#{company}.html")
+  html_commits_path = File.join(ROOT, "#{company}.commits.html")
+  html_reviews_path = File.join(ROOT, "#{company}.reviews.html")
   xlsx_path = File.join(ROOT, "#{company}.xlsx")
 
   commits_labels, commits_data = fetch_engineers(
@@ -36,11 +38,26 @@ companies.each do |company|
     company: company,
     metric: 'commits',
   )
+  html_engineer_generate(
+    html_commits_path,
+    company,
+    'commits',
+    commits_labels,
+    commits_data
+  )
   reviews_labels, reviews_data = fetch_engineers(
     release: release,
     company: company,
     metric: 'marks',
   )
+  html_engineer_generate(
+    html_reviews_path,
+    company,
+    'reviews',
+    reviews_labels,
+    reviews_data
+  )
+
   html_generate(
     html_path,
     company,
