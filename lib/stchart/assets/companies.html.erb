@@ -180,7 +180,7 @@
         <td class='name'><a href='<%=id%>.html'><%= id %></a></td>
         <% prev_m = 0 %>
         <% data['people'].each do |m| %>
-        <td class='data'>
+        <td class='metric'>
           <%= m %> <span>(<%= m - prev_m %>)</span>
           <% prev_m = m %>
         </td>
