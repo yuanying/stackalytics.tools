@@ -4,19 +4,23 @@ module Stchart
       id.split('@')[0]
     end
 
-    def delta_to_class(delta)
+    def delta_to_class(delta, max=9)
       return 'zero' if delta == 0
-      _delta = delta / 3
+      level = max / 3
+      _delta = delta / level
       _class = ''
       case _delta
+      when 0
+        _class = ''
       when 1
         _class = 'level-one'
       when 2
         _class = 'level-two'
       when 3
         _class = 'level-three'
+      else
+        _class = 'great'
       end
-      _class += ' great' if delta > 9
       return _class
     end
 

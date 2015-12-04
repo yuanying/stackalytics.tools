@@ -172,7 +172,7 @@
           </td>
           <% prev_m = 0 %>
           <% data.each do |m| %>
-          <td class='metric <%= delta_to_class(m - prev_m)%>'>
+          <td class='metric <%= delta_to_class(m - prev_m, 9)%>'>
             <%= m %> <span>(<%= m - prev_m %>)</span>
             <% prev_m = m %>
           </td>
@@ -202,7 +202,7 @@
           </td>
           <% prev_m = 0 %>
           <% data.each do |m| %>
-          <td class='metric <%= delta_to_class(m - prev_m)%>'>
+          <td class='metric <%= delta_to_class(m - prev_m, 30)%>'>
             <%= m %> <span>(<%= m - prev_m %>)</span>
             <% prev_m = m %>
           </td>

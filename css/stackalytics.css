@@ -10,7 +10,7 @@
   color: red;
 }
 .metric.level-one span {
-  color: rgba(75, 178, 197, 1);
+  color: #888;
 }
 .metric.level-two span {
   color: rgba(45, 148, 167, 1);
