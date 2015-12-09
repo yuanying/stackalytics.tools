@@ -64,6 +64,10 @@
   var engineerLabels = [<%= person_labels.map{|l| "\"#{short_date(l)}\"" }.join(', ') %>];
 
   $(function() {
+    var ua = window.navigator.userAgent.toLowerCase();
+    if ((ua.indexOf("msie") != -1 ) || (ua.indexOf('trident') != -1)) {
+      alert("Use modern browser instead of shit!");
+    }
     var commit_ctx = document.getElementById("commitcanvas").getContext("2d");
     var review_ctx = document.getElementById("reviewcanvas").getContext("2d");
     var people_ctx = document.getElementById("peoplecanvas").getContext("2d");
