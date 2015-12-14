@@ -1,0 +1,61 @@
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+  <link href="css/stackalytics.css" rel="stylesheet" media="screen">
+  <script src="http://code.jquery.com/jquery.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <title>Stackalytics.Chart</title>
+</head>
+<body>
+<div class='container'>
+  <h1>Number of <%= metric.capitalize %></h1>
+
+  <ol class="breadcrumb">
+    <li><a href="./index.html">Home</a></li>
+    <li class="active"><%= metric %></li>
+  </ol>
+
+  <div>
+    <a class='btn btn-primary' href='index.xlsx'>Excel</a>
+    <a class='btn btn-default' href="http://stackalytics.com/">
+      Stackalytics
+    </a>
+  </div>
+
+  <table class='table table-hover'>
+    <tr>
+      <th></th>
+      <th></th>
+      <% labels.each do |label| %>
+        <% if friday?(label) %>
+        <th><%= short_date(label) %></th>
+        <% end %>
+      <% end %>
+    </tr>
+    <% datasets.each_with_index do |(id, data), index| %>
+      <% color = get_color(index) %>
+    <tr id='<%=id%>'>
+      <td style="background-color: <%= color[0] %>;">&nbsp;</td>
+      <td class='name'><a href='<%=id%>.html'><%= id %></a></td>
+      <% data.each_with_index do |m, i| %>
+        <% if friday?(labels[i]) %>
+        <td class='metric'>
+          <%= m %>
+        </td>
+        <% end %>
+      <% end %>
+    </tr>
+    <% end %>
+  </table>
+
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <p class="text-muted"><a href="https://github.com/yuanying/stackalytics.tools">stackalytics.tools</a></p>
+  </div>
+</footer>
+
+</body>
+</html>

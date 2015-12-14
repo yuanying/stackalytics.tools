@@ -38,7 +38,7 @@ companies.each do |company|
     company: company,
     metric: 'commits',
   )
-  html_engineer_generate(
+  html_company_table_generate(
     html_commits_path,
     company,
     'commits',
@@ -50,7 +50,7 @@ companies.each do |company|
     company: company,
     metric: 'marks',
   )
-  html_engineer_generate(
+  html_company_table_generate(
     html_reviews_path,
     company,
     'reviews',
@@ -58,7 +58,7 @@ companies.each do |company|
     reviews_data
   )
 
-  html_generate(
+  html_company_generate(
     html_path,
     company,
     commits_labels,
@@ -66,7 +66,7 @@ companies.each do |company|
     reviews_labels,
     reviews_data,
   )
-  xlsx_generate(
+  xlsx_company_generate(
     xlsx_path,
     company,
     commits_labels,
@@ -84,10 +84,24 @@ commits_labels, commits_data = fetch_companies(
   companies: companies,
   metric: 'commits'
 )
+html_path = File.join(ROOT, "index.commits.html")
+html_companies_compare_table(
+  html_path,
+  'commits',
+  commits_labels,
+  commits_data
+)
 reviews_labels, reviews_data = fetch_companies(
   release: release,
   companies: companies,
   metric: 'marks'
+)
+html_path = File.join(ROOT, "index.reviews.html")
+html_companies_compare_table(
+  html_path,
+  'reviews',
+  reviews_labels,
+  reviews_data
 )
 
 html_path = File.join(ROOT, "index.html")

@@ -34,7 +34,7 @@ module Stchart
       end
     end
 
-    def xlsx_generate(
+    def xlsx_company_generate(
           xlsx_path,
           company,
           commits_labels,
