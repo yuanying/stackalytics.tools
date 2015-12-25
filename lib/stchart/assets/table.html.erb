@@ -37,7 +37,7 @@
     <tr class='person' id='commits_<%=_short_id(id)%>' title='<%=_short_id(id)%>'>
       <td style="background-color: <%= color[0] %>;">&nbsp;</td>
       <td class='name'>
-        <a href="http://stackalytics.com/?user_id=<%=id%>&metric=<%= metric == 'reviews' ? 'marks' : metric %>">
+        <a href="http://stackalytics.com/?user_id=<%=id%>&amp;metric=<%= metric == 'reviews' ? 'marks' : metric %>">
           <%= _short_id(id) %>
         </a>
       </td>
