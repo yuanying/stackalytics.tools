@@ -81,5 +81,6 @@ module Stchart
     [8, 'kilo', Date.new(2015, 4, 30)],
     [9, 'liberty', Date.new(2015, 9, 17)],
     [10, 'mitaka', Date.new(2016, 4, 8)],
+    [11, 'newton', Date.new(2016, 10, 6)],
   ]
 end
